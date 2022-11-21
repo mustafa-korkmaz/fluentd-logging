@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "FluentdLogging": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
