@@ -15,10 +15,12 @@ class Program
 
         ILogger logger = loggerFactory.CreateLogger<Program>();
 
-        logger.LogTrace("A trace level log");
-
-        logger.LogInformation("An information level log");
-
-        Console.WriteLine("A Console.WriteLine log");
+        while (true)
+        {
+            Thread.Sleep(5000);
+            Random rnd = new Random();
+            LogLevel logLevel = (LogLevel)rnd.Next(0,5);
+            logger.Log(logLevel,$"Just a {logLevel:G} log recorded at {DateTime.UtcNow.ToLongTimeString()}");
+        }
     }
 }

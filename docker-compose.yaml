@@ -1,0 +1,7 @@
+services:
+  log_generator:
+    container_name: log_generator
+    restart: on-failure
+    build: 
+      context: .
+      dockerfile: ./FluentdLogging/Dockerfile
