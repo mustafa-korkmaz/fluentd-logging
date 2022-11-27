@@ -1,7 +1,45 @@
 services:
   log_generator:
     container_name: log_generator
-    restart: on-failure
+    links:
+      - fluentd
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: fluentd:24224
+        tag: log_generator
     build: 
       context: .
       dockerfile: ./FluentdLogging/Dockerfile
+  fluentd:
+    container_name: fluentd
+    links:
+      - elastic
+    build: 
+      context: .
+      dockerfile: ./fluentd-setup/Dockerfile
+    expose:
+      - 24224
+  elastic:
+    container_name: elastic
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.2
+    expose:
+      - 9200
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=elastic
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:8.5.2
+    ports:
+      - 5601:5601
+    depends_on:
+      elastic:
+        condition: service_started
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elastic:9200
+volumes:
+  elasticsearch-data: null
